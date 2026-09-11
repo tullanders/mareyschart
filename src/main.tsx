@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MareyChart } from './marey-chart/MareyChart';
-import type { Station } from './marey-chart/types';
+import type { Station, Train } from './marey-chart/types';
 
 const mockStations: Station[] = [
   { id: 'a', name: 'Alpha', distanceKm: 0 },
@@ -10,10 +10,32 @@ const mockStations: Station[] = [
   { id: 'd', name: 'Delta', distanceKm: 100 },
 ];
 
+const now = new Date();
+const mockTrains: Train[] = [
+  {
+    id: 't1',
+    points: [
+      { time: new Date(now.getTime() - 10 * 60_000), place: 'a' },
+      { time: new Date(now.getTime() + 5 * 60_000), place: 'b' },
+      { time: new Date(now.getTime() + 20 * 60_000), place: 'c' },
+      { time: new Date(now.getTime() + 45 * 60_000), place: 'd' },
+    ],
+  },
+  {
+    id: 't2',
+    points: [
+      { time: new Date(now.getTime() + 50 * 60_000), place: 'd' },
+      { time: new Date(now.getTime() + 30 * 60_000), place: 'c' },
+      { time: new Date(now.getTime() + 15 * 60_000), place: 'b' },
+      { time: new Date(now.getTime()), place: 'a' },
+    ],
+  },
+];
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <div style={{ height: '100vh' }}>
-      <MareyChart stations={mockStations} trains={[]} />
+      <MareyChart stations={mockStations} trains={mockTrains} />
     </div>
   </StrictMode>
 );

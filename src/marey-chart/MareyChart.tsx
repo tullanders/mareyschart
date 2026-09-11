@@ -4,6 +4,7 @@ import { MareyChartProvider } from './MareyChartContext';
 import { XAxis } from './XAxis';
 import { GridLines } from './GridLines';
 import { YAxis } from './YAxis';
+import { TrainLayer } from './TrainLayer';
 import { defaultConfig } from './config';
 import type { MareyChartConfig, Station, Train } from './types';
 
@@ -13,7 +14,7 @@ export type MareyChartProps = {
   config?: MareyChartConfig;
 };
 
-export function MareyChart({ stations, trains: _trains, config = defaultConfig }: MareyChartProps) {
+export function MareyChart({ stations, trains, config = defaultConfig }: MareyChartProps) {
   const [containerRef, size] = useContainerSize<HTMLDivElement>();
   const scales = useMareyScales(stations, config, size);
 
@@ -24,6 +25,7 @@ export function MareyChart({ stations, trains: _trains, config = defaultConfig }
           <GridLines width={size.width} />
           <XAxis stations={stations} />
           <YAxis width={size.width} />
+          <TrainLayer trains={trains} />
         </MareyChartProvider>
       </svg>
     </div>
