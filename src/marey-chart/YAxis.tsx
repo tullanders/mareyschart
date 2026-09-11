@@ -59,12 +59,28 @@ export function YAxis({ width }: { width: number }) {
         fill="transparent"
       />
       {ticks.map((tick) => (
-        <text key={`left-${tick.getTime()}`} data-testid="y-label-left" x={0} y={yScale(tick)}>
+        <text
+          key={`left-${tick.getTime()}`}
+          data-testid="y-label-left"
+          x={-8}
+          y={yScale(tick)}
+          textAnchor="end"
+          dominantBaseline="middle"
+          fontSize={11}
+        >
           {formatTime(tick)}
         </text>
       ))}
       {ticks.map((tick) => (
-        <text key={`right-${tick.getTime()}`} data-testid="y-label-right" x={width} y={yScale(tick)}>
+        <text
+          key={`right-${tick.getTime()}`}
+          data-testid="y-label-right"
+          x={width + 8}
+          y={yScale(tick)}
+          textAnchor="start"
+          dominantBaseline="middle"
+          fontSize={11}
+        >
           {formatTime(tick)}
         </text>
       ))}

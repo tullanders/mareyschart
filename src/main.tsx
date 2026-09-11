@@ -34,8 +34,18 @@ const mockTrains: Train[] = [
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <div style={{ height: '100vh' }}>
-      <MareyChart stations={mockStations} trains={mockTrains} />
+    <div
+      style={{
+        height: '100vh',
+        width: '100vw',
+        boxSizing: 'border-box',
+        padding: 24,
+        background: '#f3f4f6',
+      }}
+    >
+      <div style={{ width: '100%', height: '100%', border: '1px solid #9ca3af', boxSizing: 'border-box' }}>
+        <MareyChart stations={mockStations} trains={mockTrains} />
+      </div>
     </div>
   </StrictMode>
 );
