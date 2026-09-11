@@ -5,6 +5,7 @@ import { XAxis } from './XAxis';
 import { GridLines } from './GridLines';
 import { YAxis } from './YAxis';
 import { TrainLayer } from './TrainLayer';
+import { NowLine } from './NowLine';
 import { defaultConfig } from './config';
 import type { MareyChartConfig, Station, Train } from './types';
 
@@ -26,6 +27,7 @@ export function MareyChart({ stations, trains, config = defaultConfig }: MareyCh
           <XAxis stations={stations} />
           <YAxis width={size.width} />
           <TrainLayer trains={trains} />
+          <NowLine width={size.width} color={config.yAxis.colors.nowLine} />
         </MareyChartProvider>
       </svg>
     </div>
