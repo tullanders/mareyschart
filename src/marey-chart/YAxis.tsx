@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { select } from 'd3-selection';
 import { zoom as d3Zoom, zoomIdentity, type D3ZoomEvent } from 'd3-zoom';
 import { useMareyChartScales } from './MareyChartContext';
+import { createYScale } from './yScale';
 
 function formatTime(date: Date): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -43,6 +44,14 @@ export function YAxis({ width, height }: { width: number; height: number }) {
         [0, 0],
         [width, height],
       ])
+      .filter((event: Event) => {
+        // Plain wheel = pan (handled separately below, decoupled from
+        // d3-zoom's accumulated transform). Ctrl+wheel (also how browsers
+        // report trackpad pinch) = zoom, drag = pan — both still go
+        // through d3-zoom as before.
+        if (event.type === 'wheel') return (event as WheelEvent).ctrlKey;
+        return !(event as MouseEvent).button;
+      })
       .on('start', () => {
         gestureBaseRef.current = yDomainRef.current ?? null;
       })
@@ -51,15 +60,13 @@ export function YAxis({ width, height }: { width: number; height: number }) {
         const setter = setYDomainRef.current;
         if (!base || !setter) return;
 
-        const baseDurationMs = base[1].getTime() - base[0].getTime();
-        const baseMidpointMs = (base[0].getTime() + base[1].getTime()) / 2;
-        const { k, y } = event.transform;
-        const newDurationMs = baseDurationMs / k;
-        const centerMs = baseMidpointMs - (y / height) * baseDurationMs;
-        const candidate: [Date, Date] = [
-          new Date(centerMs - newDurationMs / 2),
-          new Date(centerMs + newDurationMs / 2),
-        ];
+        // Rebuild the scale as it was at gesture start, then let d3-zoom's
+        // own inversion (rescaleY) derive the new domain from the
+        // accumulated transform. This keeps the domain value under the
+        // pointer fixed for any k, unlike hand-rolled offset math.
+        const baseScale = createYScale(base, height);
+        const [start, end] = event.transform.rescaleY(baseScale).domain();
+        const candidate: [Date, Date] = [start, end];
         setter(candidate, event.sourceEvent != null);
       })
       .on('end', () => {
@@ -70,8 +77,31 @@ export function YAxis({ width, height }: { width: number; height: number }) {
       });
 
     selection.call(behavior);
+
+    // Plain wheel (no ctrl) pans instead of zooming. Handled outside
+    // d3-zoom entirely — it never touches the node's accumulated __zoom
+    // transform, so it can't interact with (or be reset by) a concurrent
+    // drag/ctrl-zoom gesture.
+    selection.on('wheel.pan', (event: WheelEvent) => {
+      if (event.ctrlKey) return;
+      event.preventDefault();
+
+      const base = yDomainRef.current;
+      const setter = setYDomainRef.current;
+      if (!base) return;
+
+      const durationMs = base[1].getTime() - base[0].getTime();
+      const deltaMs = (event.deltaY / height) * durationMs;
+      const candidate: [Date, Date] = [
+        new Date(base[0].getTime() + deltaMs),
+        new Date(base[1].getTime() + deltaMs),
+      ];
+      setter(candidate, true);
+    });
+
     return () => {
       selection.on('.zoom', null);
+      selection.on('wheel.pan', null);
     };
   }, [width, height]);
 
