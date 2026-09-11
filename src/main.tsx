@@ -48,6 +48,38 @@ const mockBranchTrains: Train[] = [
   },
 ];
 
+const mockBranch2Stations: Station[] = [
+  { id: 'b', name: 'Beta', distanceKm: 10 },
+  { id: 'f', name: 'Zeta', distanceKm: 40 },
+];
+
+const mockBranch2Trains: Train[] = [
+  {
+    id: 't4',
+    points: [
+      { time: new Date(now.getTime() + 5 * 60_000), place: 'b' },
+      { time: new Date(now.getTime() + 25 * 60_000), place: 'f' },
+    ],
+  },
+];
+
+const mockBranch3Stations: Station[] = [
+  { id: 'c', name: 'Gamma', distanceKm: 100 },
+  { id: 'g', name: 'Eta', distanceKm: 130 },
+  { id: 'h', name: 'Theta', distanceKm: 160 },
+];
+
+const mockBranch3Trains: Train[] = [
+  {
+    id: 't5',
+    points: [
+      { time: new Date(now.getTime() + 20 * 60_000), place: 'c' },
+      { time: new Date(now.getTime() + 35 * 60_000), place: 'g' },
+      { time: new Date(now.getTime() + 55 * 60_000), place: 'h' },
+    ],
+  },
+];
+
 /** Dev-only slider so x-axis blend/constraint knobs can be tweaked without editing code. */
 function XAxisControls({
   blendWeight,
@@ -159,6 +191,8 @@ function App() {
           panels={[
             { id: 'main', stations: mockStations, trains: mockTrains },
             { id: 'branch', stations: mockBranchStations, trains: mockBranchTrains },
+            { id: 'branch2', stations: mockBranch2Stations, trains: mockBranch2Trains },
+            { id: 'branch3', stations: mockBranch3Stations, trains: mockBranch3Trains },
           ]}
           config={config}
         />
