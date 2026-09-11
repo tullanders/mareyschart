@@ -8,7 +8,19 @@ function formatTime(date: Date): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export function YAxis({ width, height }: { width: number; height: number }) {
+export function YAxis({
+  width,
+  height,
+  showLeftLabels = true,
+  showRightLabels = true,
+  showResetButton = true,
+}: {
+  width: number;
+  height: number;
+  showLeftLabels?: boolean;
+  showRightLabels?: boolean;
+  showResetButton?: boolean;
+}) {
   const { yScale, yDomain, setYDomain, resetToNow } = useMareyChartScales();
   const surfaceRef = useRef<SVGRectElement>(null);
 
@@ -118,33 +130,35 @@ export function YAxis({ width, height }: { width: number; height: number }) {
         height={height}
         fill="transparent"
       />
-      {ticks.map((tick) => (
-        <text
-          key={`left-${tick.getTime()}`}
-          data-testid="y-label-left"
-          x={-8}
-          y={yScale(tick)}
-          textAnchor="end"
-          dominantBaseline="middle"
-          fontSize={11}
-        >
-          {formatTime(tick)}
-        </text>
-      ))}
-      {ticks.map((tick) => (
-        <text
-          key={`right-${tick.getTime()}`}
-          data-testid="y-label-right"
-          x={width + 8}
-          y={yScale(tick)}
-          textAnchor="start"
-          dominantBaseline="middle"
-          fontSize={11}
-        >
-          {formatTime(tick)}
-        </text>
-      ))}
-      {resetToNow && (
+      {showLeftLabels &&
+        ticks.map((tick) => (
+          <text
+            key={`left-${tick.getTime()}`}
+            data-testid="y-label-left"
+            x={-8}
+            y={yScale(tick)}
+            textAnchor="end"
+            dominantBaseline="middle"
+            fontSize={11}
+          >
+            {formatTime(tick)}
+          </text>
+        ))}
+      {showRightLabels &&
+        ticks.map((tick) => (
+          <text
+            key={`right-${tick.getTime()}`}
+            data-testid="y-label-right"
+            x={width + 8}
+            y={yScale(tick)}
+            textAnchor="start"
+            dominantBaseline="middle"
+            fontSize={11}
+          >
+            {formatTime(tick)}
+          </text>
+        ))}
+      {showResetButton && resetToNow && (
         <foreignObject x={width / 2 - 40} y={0} width={80} height={24}>
           <button type="button" onClick={resetToNow}>
             Återställ

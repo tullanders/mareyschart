@@ -98,6 +98,40 @@ describe('YAxis', () => {
     expect(zoomedDurationMs).not.toBe(initialDurationMs);
   });
 
+  it('hides left/right labels and the reset button when the corresponding show* props are false', () => {
+    const yScale = scaleTime()
+      .domain([new Date('2026-01-01T12:00:00Z'), new Date('2026-01-01T12:20:00Z')])
+      .range([0, 200]);
+    const resetToNow = vi.fn();
+
+    const { queryAllByTestId, queryByRole } = render(
+      <MareyChartProvider
+        value={{
+          xForStation: new Map(),
+          yScale,
+          yDomain: yScale.domain() as [Date, Date],
+          setYDomain: vi.fn(),
+          isFollowingNow: true,
+          resetToNow,
+        }}
+      >
+        <svg>
+          <YAxis
+            width={400}
+            height={200}
+            showLeftLabels={false}
+            showRightLabels={false}
+            showResetButton={false}
+          />
+        </svg>
+      </MareyChartProvider>
+    );
+
+    expect(queryAllByTestId('y-label-left').length).toBe(0);
+    expect(queryAllByTestId('y-label-right').length).toBe(0);
+    expect(queryByRole('button', { name: /återställ/i })).toBeNull();
+  });
+
   it('does not require an excessive number of reverse wheel ticks to leave a zoom bound', () => {
     function Harness({ onDomain }: { onDomain: (d: [Date, Date]) => void }) {
       const scales = useMareyScales([], defaultConfig, { width: 400, height: 200 });
