@@ -33,6 +33,21 @@ const mockTrains: Train[] = [
   },
 ];
 
+const mockBranchStations: Station[] = [
+  { id: 'd', name: 'Delta', distanceKm: 200 },
+  { id: 'e', name: 'Epsilon', distanceKm: 260 },
+];
+
+const mockBranchTrains: Train[] = [
+  {
+    id: 't3',
+    points: [
+      { time: new Date(now.getTime() + 45 * 60_000), place: 'd' },
+      { time: new Date(now.getTime() + 70 * 60_000), place: 'e' },
+    ],
+  },
+];
+
 /** Dev-only slider so x-axis blend/constraint knobs can be tweaked without editing code. */
 function XAxisControls({
   blendWeight,
@@ -140,7 +155,13 @@ function App() {
       <div
         style={{ flex: 1, minHeight: 0, border: '1px solid #9ca3af', boxSizing: 'border-box' }}
       >
-        <MareyChart stations={mockStations} trains={mockTrains} config={config} />
+        <MareyChart
+          panels={[
+            { id: 'main', stations: mockStations, trains: mockTrains },
+            { id: 'branch', stations: mockBranchStations, trains: mockBranchTrains },
+          ]}
+          config={config}
+        />
       </div>
     </div>
   );
