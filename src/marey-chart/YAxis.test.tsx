@@ -1,6 +1,6 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { scaleTime } from 'd3-scale';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { YAxis } from './YAxis';
 import { MareyChartProvider } from './MareyChartContext';
 
@@ -22,5 +22,37 @@ describe('YAxis', () => {
     const rightLabels = getAllByTestId('y-label-right');
     expect(leftLabels.length).toBe(yScale.ticks().length);
     expect(rightLabels.length).toBe(yScale.ticks().length);
+  });
+
+  it('calls setYDomain with causedByUserGesture=true on user wheel input, and renders a reset control', () => {
+    const yScale = scaleTime()
+      .domain([new Date('2026-01-01T12:00:00Z'), new Date('2026-01-01T12:20:00Z')])
+      .range([0, 200]);
+    const setYDomain = vi.fn();
+    const resetToNow = vi.fn();
+
+    const { getByTestId, getByRole } = render(
+      <MareyChartProvider
+        value={{
+          xForStation: new Map(),
+          yScale,
+          yDomain: yScale.domain() as [Date, Date],
+          setYDomain,
+          isFollowingNow: true,
+          resetToNow,
+        }}
+      >
+        <svg>
+          <YAxis width={400} />
+        </svg>
+      </MareyChartProvider>
+    );
+
+    fireEvent.wheel(getByTestId('y-axis-zoom-surface'), { deltaY: -10 });
+    expect(setYDomain).toHaveBeenCalled();
+    expect(setYDomain.mock.calls[0][1]).toBe(true);
+
+    fireEvent.click(getByRole('button', { name: /återställ/i }));
+    expect(resetToNow).toHaveBeenCalled();
   });
 });
