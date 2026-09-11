@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { applyPixelConstraints, computeBlendedPositions } from './xAxisPositioning';
 import { createDefaultYDomain, createYScale } from './yScale';
 import { clampYDomain } from './clampYDomain';
@@ -36,6 +36,14 @@ export function useMareyScales(stations: Station[], config: MareyChartConfig, di
     setIsFollowingNow(true);
     setYDomainState(createDefaultYDomain(new Date(), config.yAxis));
   }, [config.yAxis]);
+
+  useEffect(() => {
+    if (!isFollowingNow) return;
+    const intervalId = setInterval(() => {
+      setYDomainState(createDefaultYDomain(new Date(), config.yAxis));
+    }, config.yAxis.mechanicalRefreshIntervalMs);
+    return () => clearInterval(intervalId);
+  }, [isFollowingNow, config.yAxis]);
 
   const yScale = useMemo(() => createYScale(yDomain, dims.height), [yDomain, dims.height]);
 
