@@ -88,7 +88,7 @@ export function YAxis({ width, height }: { width: number; height: number }) {
 
       const base = yDomainRef.current;
       const setter = setYDomainRef.current;
-      if (!base) return;
+      if (!base || !setter) return;
 
       const durationMs = base[1].getTime() - base[0].getTime();
       const deltaMs = (event.deltaY / height) * durationMs;
