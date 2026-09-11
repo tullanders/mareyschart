@@ -3,7 +3,7 @@ import { scaleTime } from 'd3-scale';
 import { describe, expect, it, vi } from 'vitest';
 import { YAxis } from './YAxis';
 import { MareyChartProvider } from './MareyChartContext';
-import { useMareyScales } from './useMareyScales';
+import { useYScale } from './useYScale';
 import { defaultConfig } from './config';
 
 describe('YAxis', () => {
@@ -134,11 +134,11 @@ describe('YAxis', () => {
 
   it('does not require an excessive number of reverse wheel ticks to leave a zoom bound', () => {
     function Harness({ onDomain }: { onDomain: (d: [Date, Date]) => void }) {
-      const scales = useMareyScales([], defaultConfig, { width: 400, height: 200 });
+      const scales = useYScale(defaultConfig.yAxis, 200);
       onDomain(scales.yDomain);
       return (
         <svg>
-          <MareyChartProvider value={scales}>
+          <MareyChartProvider value={{ xForStation: new Map(), ...scales }}>
             <YAxis width={400} height={200} />
           </MareyChartProvider>
         </svg>

@@ -15,6 +15,12 @@ export type Train = {
   points: TrainPoint[];
 };
 
+export type MareyChartPanel = {
+  id: string;
+  stations: Station[];
+  trains: Train[];
+};
+
 export type MareyChartConfig = {
   xAxis: {
     /** 0 = fully equidistant, 1 = fully proportional to real distance. */
