@@ -1,25 +1,40 @@
 import { useEffect, useRef } from 'react';
 import { select } from 'd3-selection';
-import { zoom as d3Zoom, type D3ZoomEvent } from 'd3-zoom';
+import { zoom as d3Zoom, zoomIdentity, type D3ZoomEvent } from 'd3-zoom';
 import { useMareyChartScales } from './MareyChartContext';
 
 function formatTime(date: Date): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export function YAxis({ width }: { width: number }) {
+export function YAxis({ width, height }: { width: number; height: number }) {
   const { yScale, yDomain, setYDomain, resetToNow } = useMareyChartScales();
   const surfaceRef = useRef<SVGRectElement>(null);
 
+  // d3-zoom accumulates its transform on the DOM node across the whole
+  // gesture (and beyond, until explicitly reset). We must compare that
+  // cumulative transform against a domain snapshot taken at the SAME
+  // moment — captured once per gesture (on 'start'), not re-derived from
+  // React state on every 'zoom' tick — otherwise each tick's effect gets
+  // re-applied on top of an already-updated base and compounds runaway,
+  // which is what made panning/zooming get stuck at the min/max bound.
+  const yDomainRef = useRef(yDomain);
+  const setYDomainRef = useRef(setYDomain);
+  const gestureBaseRef = useRef<[Date, Date] | null>(null);
+
+  useEffect(() => {
+    yDomainRef.current = yDomain;
+  }, [yDomain]);
+
+  useEffect(() => {
+    setYDomainRef.current = setYDomain;
+  }, [setYDomain]);
+
   useEffect(() => {
     const surface = surfaceRef.current;
-    if (!surface || !yDomain || !setYDomain) return;
+    if (!surface) return;
 
-    const baseDomain = yDomain;
-    const baseDurationMs = baseDomain[1].getTime() - baseDomain[0].getTime();
-    const baseMidpointMs = (baseDomain[0].getTime() + baseDomain[1].getTime()) / 2;
-
-    const height = yScale.range()[1] || 1;
+    const selection = select(surface);
 
     const behavior = d3Zoom<SVGRectElement, unknown>()
       // jsdom doesn't implement SVGElement.ownerSVGElement.viewBox, which
@@ -28,7 +43,16 @@ export function YAxis({ width }: { width: number }) {
         [0, 0],
         [width, height],
       ])
+      .on('start', () => {
+        gestureBaseRef.current = yDomainRef.current ?? null;
+      })
       .on('zoom', (event: D3ZoomEvent<SVGRectElement, unknown>) => {
+        const base = gestureBaseRef.current;
+        const setter = setYDomainRef.current;
+        if (!base || !setter) return;
+
+        const baseDurationMs = base[1].getTime() - base[0].getTime();
+        const baseMidpointMs = (base[0].getTime() + base[1].getTime()) / 2;
         const { k, y } = event.transform;
         const newDurationMs = baseDurationMs / k;
         const centerMs = baseMidpointMs - (y / height) * baseDurationMs;
@@ -36,14 +60,20 @@ export function YAxis({ width }: { width: number }) {
           new Date(centerMs - newDurationMs / 2),
           new Date(centerMs + newDurationMs / 2),
         ];
-        setYDomain(candidate, event.sourceEvent != null);
+        setter(candidate, event.sourceEvent != null);
+      })
+      .on('end', () => {
+        // Reset the node's stored transform so the next gesture starts
+        // clean instead of continuing to accumulate on top of this one.
+        selection.property('__zoom', zoomIdentity);
+        gestureBaseRef.current = null;
       });
 
-    select(surface).call(behavior);
+    selection.call(behavior);
     return () => {
-      select(surface).on('.zoom', null);
+      selection.on('.zoom', null);
     };
-  }, [yDomain, yScale, setYDomain, width]);
+  }, [width, height]);
 
   const ticks = yScale.ticks();
 
@@ -55,7 +85,7 @@ export function YAxis({ width }: { width: number }) {
         x={0}
         y={0}
         width={width}
-        height={yScale.range()[1]}
+        height={height}
         fill="transparent"
       />
       {ticks.map((tick) => (

@@ -33,7 +33,7 @@ export function MareyChart({ stations, trains, config = defaultConfig }: MareyCh
           <g transform={`translate(${Y_AXIS_LABEL_MARGIN}, ${X_AXIS_LABEL_MARGIN})`}>
             <GridLines width={plotWidth} />
             <XAxis stations={stations} height={plotHeight} />
-            <YAxis width={plotWidth} />
+            <YAxis width={plotWidth} height={plotHeight} />
             <TrainLayer trains={trains} />
             <NowLine width={plotWidth} color={config.yAxis.colors.nowLine} />
           </g>
