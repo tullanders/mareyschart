@@ -2,6 +2,8 @@ import { useContainerSize } from './useContainerSize';
 import { useMareyScales } from './useMareyScales';
 import { MareyChartProvider } from './MareyChartContext';
 import { XAxis } from './XAxis';
+import { GridLines } from './GridLines';
+import { YAxis } from './YAxis';
 import { defaultConfig } from './config';
 import type { MareyChartConfig, Station, Train } from './types';
 
@@ -19,7 +21,9 @@ export function MareyChart({ stations, trains: _trains, config = defaultConfig }
     <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
       <svg data-testid="marey-chart-svg" width={size.width} height={size.height}>
         <MareyChartProvider value={scales}>
+          <GridLines width={size.width} />
           <XAxis stations={stations} />
+          <YAxis width={size.width} />
         </MareyChartProvider>
       </svg>
     </div>

@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { applyPixelConstraints, computeBlendedPositions } from './xAxisPositioning';
+import { createDefaultYDomain, createYScale } from './yScale';
 import type { MareyChartConfig, Station } from './types';
 
 export type ChartDims = { width: number; height: number };
@@ -16,5 +17,8 @@ export function useMareyScales(stations: Station[], config: MareyChartConfig, di
     return new Map(stations.map((station, i) => [station.id, pixels[i]]));
   }, [stations, config.xAxis.blendWeight, config.xAxis.minStationPixelGap, config.xAxis.maxSegmentShare, dims.width]);
 
-  return { xForStation };
+  const [yDomain] = useState<[Date, Date]>(() => createDefaultYDomain(new Date(), config.yAxis));
+  const yScale = useMemo(() => createYScale(yDomain, dims.height), [yDomain, dims.height]);
+
+  return { xForStation, yScale };
 }

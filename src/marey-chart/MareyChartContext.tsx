@@ -2,6 +2,7 @@ import { createContext, useContext, type ReactNode } from 'react';
 
 export type MareyChartScales = {
   xForStation: Map<string, number>;
+  yScale: import('d3-scale').ScaleTime<number, number>;
 };
 
 const MareyChartContext = createContext<MareyChartScales | null>(null);
