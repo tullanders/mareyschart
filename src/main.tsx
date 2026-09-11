@@ -6,8 +6,8 @@ import type { Station, Train } from './marey-chart/types';
 const mockStations: Station[] = [
   { id: 'a', name: 'Alpha', distanceKm: 0 },
   { id: 'b', name: 'Beta', distanceKm: 10 },
-  { id: 'c', name: 'Gamma', distanceKm: 15 },
-  { id: 'd', name: 'Delta', distanceKm: 100 },
+  { id: 'c', name: 'Gamma', distanceKm: 200 },
+  { id: 'd', name: 'Delta', distanceKm: 15 },
 ];
 
 const now = new Date();
