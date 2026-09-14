@@ -140,6 +140,7 @@ export function YAxis({
             textAnchor="end"
             dominantBaseline="middle"
             fontSize={11}
+            fill="currentColor"
           >
             {formatTime(tick)}
           </text>
@@ -154,6 +155,7 @@ export function YAxis({
             textAnchor="start"
             dominantBaseline="middle"
             fontSize={11}
+            fill="currentColor"
           >
             {formatTime(tick)}
           </text>

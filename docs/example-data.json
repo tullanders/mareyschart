@@ -1,0 +1,84 @@
+{
+  "$comment": "Example input data for MareyChart, matching src/marey-chart/types.ts. Each panel is a self-contained section of the line: its own stations and only the trains that pass through them. A station id that appears in more than one panel (e.g. 'b', 'c', 'd' below) is the same physical station shared between a main line and a branch. Times are ISO 8601 (UTC).",
+  "panels": [
+    {
+      "id": "main",
+      "stations": [
+        { "id": "a", "name": "Alpha", "distanceKm": 0 },
+        { "id": "b", "name": "Beta", "distanceKm": 10 },
+        { "id": "c", "name": "Gamma", "distanceKm": 100 },
+        { "id": "d", "name": "Delta", "distanceKm": 200 }
+      ],
+      "trains": [
+        {
+          "id": "t1",
+          "points": [
+            { "time": "2026-09-11T07:50:00Z", "place": "a" },
+            { "time": "2026-09-11T08:05:00Z", "place": "b" },
+            { "time": "2026-09-11T08:20:00Z", "place": "c" },
+            { "time": "2026-09-11T08:45:00Z", "place": "d" }
+          ]
+        },
+        {
+          "id": "t2",
+          "points": [
+            { "time": "2026-09-11T08:50:00Z", "place": "d" },
+            { "time": "2026-09-11T08:30:00Z", "place": "c" },
+            { "time": "2026-09-11T08:15:00Z", "place": "b" },
+            { "time": "2026-09-11T08:00:00Z", "place": "a" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "branch",
+      "stations": [
+        { "id": "d", "name": "Delta", "distanceKm": 200 },
+        { "id": "e", "name": "Epsilon", "distanceKm": 260 }
+      ],
+      "trains": [
+        {
+          "id": "t3",
+          "points": [
+            { "time": "2026-09-11T08:45:00Z", "place": "d" },
+            { "time": "2026-09-11T09:10:00Z", "place": "e" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "branch2",
+      "stations": [
+        { "id": "b", "name": "Beta", "distanceKm": 10 },
+        { "id": "f", "name": "Zeta", "distanceKm": 40 }
+      ],
+      "trains": [
+        {
+          "id": "t4",
+          "points": [
+            { "time": "2026-09-11T08:05:00Z", "place": "b" },
+            { "time": "2026-09-11T08:25:00Z", "place": "f" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "branch3",
+      "stations": [
+        { "id": "c", "name": "Gamma", "distanceKm": 100 },
+        { "id": "g", "name": "Eta", "distanceKm": 130 },
+        { "id": "h", "name": "Theta", "distanceKm": 160 }
+      ],
+      "trains": [
+        {
+          "id": "t5",
+          "points": [
+            { "time": "2026-09-11T08:20:00Z", "place": "c" },
+            { "time": "2026-09-11T08:35:00Z", "place": "g" },
+            { "time": "2026-09-11T08:55:00Z", "place": "h" }
+          ]
+        }
+      ]
+    }
+  ]
+}

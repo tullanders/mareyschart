@@ -105,11 +105,12 @@ function XAxisControls({
         flexWrap: 'wrap',
         padding: '8px 12px',
         marginBottom: 12,
-        background: '#fff',
-        border: '1px solid #d1d5db',
+        background: '#1a2029',
+        border: '1px solid #374151',
         borderRadius: 4,
         fontSize: 13,
         fontFamily: 'sans-serif',
+        color: '#e5e7eb',
       }}
     >
       <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -171,7 +172,8 @@ function App() {
         width: '100vw',
         boxSizing: 'border-box',
         padding: 24,
-        background: '#f3f4f6',
+        background: '#0b0f14',
+        color: '#e5e7eb',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -185,7 +187,7 @@ function App() {
         onMaxSegmentShareChange={setMaxSegmentShare}
       />
       <div
-        style={{ flex: 1, minHeight: 0, border: '1px solid #9ca3af', boxSizing: 'border-box' }}
+        style={{ flex: 1, minHeight: 0, border: '1px solid #374151', boxSizing: 'border-box' }}
       >
         <MareyChart
           panels={[

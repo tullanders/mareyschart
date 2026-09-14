@@ -15,9 +15,9 @@ export const defaultConfig: MareyChartConfig = {
     zoomMaxDurationMs: 6 * 60 * 60_000,
     mechanicalRefreshIntervalMs: 30_000,
     colors: {
-      past: '#4b5563',
-      future: '#111827',
-      nowLine: '#dc2626',
+      past: '#9ca3af',
+      future: '#4b5563',
+      nowLine: '#f87171',
     },
   },
 };

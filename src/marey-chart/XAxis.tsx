@@ -30,6 +30,7 @@ export function XAxis({ stations, height }: { stations: Station[]; height: numbe
           y={-LABEL_GAP}
           textAnchor="middle"
           fontSize={FONT_SIZE}
+          fill="currentColor"
         >
           {station.name}
         </text>
@@ -42,6 +43,7 @@ export function XAxis({ stations, height }: { stations: Station[]; height: numbe
           textAnchor="middle"
           dominantBaseline="hanging"
           fontSize={FONT_SIZE}
+          fill="currentColor"
         >
           {station.name}
         </text>
