@@ -6,5 +6,5 @@ export function createDefaultYDomain(now: Date, yConfig: MareyChartConfig['yAxis
 }
 
 export function createYScale(domain: [Date, Date], height: number) {
-  return scaleTime().domain(domain).range([0, height]);
+  return scaleTime().domain(domain).range([height, 0]);
 }
